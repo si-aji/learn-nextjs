@@ -1,0 +1,37 @@
+# .github/workflows/release.yml
+name: Push to remote server
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Make commit
+    steps:
+      - name: Check Tag Format
+        run: |
+          if [[ ! "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Not a valid release tag. Exiting..."
+            exit 0
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Create Pull Request
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Release ${ref}',
+              head: 'release',  # Change this to your feature branch name
+              base: 'build',  # Change this to your main branch name
+              body: 'Automated pull request created by GitHub Actions.'
+            });
+            console.log(`PR created: ${pr.data.html_url}`);
