@@ -45,6 +45,8 @@ jobs:
       - name: Build Asset
         run: npm run build # The build command of your project
     
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Commit changes
+        uses: actions-go/push@master
         with:
-          commit_message: Build asset
+          commit-message: '[Auto] update build'
+          remote: origin
