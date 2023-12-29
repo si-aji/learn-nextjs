@@ -20,6 +20,15 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Check if Build Branch Exists
+      run: |
+        if git rev-parse --verify build >/dev/null 2>&1; then
+          echo "Release branch already exists."
+        else
+          echo "Release branch does not exist. Creating a new release branch."
+          git branch release
+        fi
       
       - name: Create Pull Request
         uses: actions/github-script@v5
