@@ -15,6 +15,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+        token: ${{ secrets.PAT }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -34,7 +35,7 @@ jobs:
             git checkout -b build
           fi
 
-      - name: Merge development -> staging
+      - name: Merge main -> build
         uses: devmasx/merge-branch@master
         with:
           type: now
@@ -45,10 +46,6 @@ jobs:
       - name: Build Asset
         run: npm run build # The build command of your project
     
-      - name: Commit and Push to Build Branch
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add .
-          git commit -m "Build assets"
-          git push origin build
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Build asset
