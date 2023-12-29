@@ -31,7 +31,9 @@ jobs:
             git checkout build
           else
             echo "Build branch does not exist. Creating a new build branch."
-            git checkout -b build
+            # git checkout -b build
+            git fetch origin build:build
+            git checkout build
           fi
 
       - name: Merge main -> build
@@ -45,8 +47,6 @@ jobs:
       - name: Build Asset
         run: npm run build # The build command of your project
     
-      - name: Commit changes
-        uses: actions-go/push@master
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit-message: '[Auto] update build'
-          remote: origin
+          commit_message: [Auto] Build asset
