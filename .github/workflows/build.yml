@@ -36,18 +36,21 @@ jobs:
             git checkout build
           fi
 
-      - name: Merge main -> build
+      - name: Merge development -> staging
         uses: devmasx/merge-branch@master
         with:
           type: now
           from_branch: main
           target_branch: build
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT }}
 
       - name: Build Asset
         run: npm run build # The build command of your project
     
-      - name: Create commit
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: [Auto] Build asset
+      - name: Commit and Push to Build Branch
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Build assets"
+          git push origin build
