@@ -47,6 +47,7 @@ jobs:
       - name: Build Asset
         run: npm run build # The build command of your project
     
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Create commit
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: [Auto] Build asset
