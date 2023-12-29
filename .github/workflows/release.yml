@@ -17,11 +17,21 @@ jobs:
             echo "Not a valid release tag. Exiting..."
             exit 0
           fi
-      - name: Push
-        uses: s0/git-publish-subdir-action@develop
-        env:
-          REPO: self
-          BRANCH: release # The branch name where you want to push the assets
-          FOLDER: build-test # The directory where your assets are generated
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
-          MESSAGE: "Release: ({sha}) {msg}" # The commit message
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Create Pull Request
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Release ${ref}',
+              head: 'release',  # Change this to your feature branch name
+              base: 'build',  # Change this to your main branch name
+              body: 'Automated pull request created by GitHub Actions.'
+            });
+            console.log(`PR created: ${pr.data.html_url}`);
