@@ -28,12 +28,12 @@ jobs:
 
       - name: Check if Build Branch Exists
         run: |
-          if git rev-parse --verify main >/dev/null 2>&1; then
-            echo "Main branch already exists."
+          if git rev-parse --verify build >/dev/null 2>&1; then
+            echo "Build branch already exists."
             git checkout build
             git pull origin build
           else
-            echo "Main branch does not exist. Fetching existing main branch."
+            echo "Build branch does not exist. Fetching existing main branch."
             git fetch origin build:build
             git checkout build
           fi
