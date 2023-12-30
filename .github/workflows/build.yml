@@ -16,7 +16,7 @@ jobs:
     name: Build and Push Commit
     steps:
       - name: Checkout `Build` Branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: build
 
@@ -27,6 +27,15 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+
+      - name: Check if Main Branch Exists
+        run: |
+          if git rev-parse --verify main >/dev/null 2>&1; then
+            echo "Main branch already exists."
+          else
+            echo "Main branch does not exist. Fetching existing main branch."
+            git fetch origin main
+          fi
 
       - name: Merge main -> build
         run: |
