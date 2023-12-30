@@ -16,11 +16,6 @@ jobs:
             exit 0
           fi
 
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: build
-
       - name: Check if Build Branch Exists
         run: |
           if git rev-parse --verify build >/dev/null 2>&1; then
@@ -49,7 +44,6 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           branch: release
           base: build
-          delete-branch: false
           body: |
             Update release based on recent build
 
