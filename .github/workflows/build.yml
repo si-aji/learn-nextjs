@@ -8,13 +8,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
       contents: write
+
     name: Build and Push Commit
     steps:
-      - name: Checkout Repository
+      - name: Checkout `Build` Branch
         uses: actions/checkout@v2
+        with:
+          ref: build
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -23,19 +27,6 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-
-      - name: Check if Build Branch Exists
-        run: |
-          if git rev-parse --verify build >/dev/null 2>&1; then
-            echo "Build branch already exists. Checking out existing build branch."
-            git checkout build
-          else
-            echo "Build branch does not exist. Creating a new build branch."
-            # git checkout -b build
-            git fetch origin build:build
-            git checkout build
-            git pull origin build
-          fi
 
       - name: Merge main -> build
         run: |
@@ -46,8 +37,8 @@ jobs:
     
       - name: Commit and Push to Build Branch
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add .
           git commit -m "Build assets"
-          git push origin build
+          git push
