@@ -18,7 +18,7 @@ jobs:
           fi
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Check if Build Branch Exists
         run: |
@@ -35,20 +35,25 @@ jobs:
             echo "Release branch already exists."
           else
             echo "Release branch does not exist. Creating a new release branch."
-            git branch release
+            exit 0
           fi
       
       - name: Create Pull Request
-        uses: actions/github-script@v5
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
         with:
-          github-token: ${{ secrets.PAT }}
-          script: |
-            const pr = await github.pulls.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: 'Release ${ref}',
-              head: 'release',  # Change this to your feature branch name
-              base: 'build',  # Change this to your main branch name
-              body: 'Automated pull request created by GitHub Actions.'
-            });
-            console.log(`PR created: ${pr.data.html_url}`);
+          token: ${{ secrets.PAT }}
+          commit-message: Update Release
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          branch: release
+          base: build
+          delete-branch: false
+          body: |
+            Update release based on recent build
+
+      - name: Check outputs
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
