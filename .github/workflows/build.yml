@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Checkout `Build` Branch
         uses: actions/checkout@v4
-        with:
-          ref: build
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -28,13 +26,16 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Check if Main Branch Exists
+      - name: Check if Build Branch Exists
         run: |
           if git rev-parse --verify main >/dev/null 2>&1; then
             echo "Main branch already exists."
+            git checkout build
+            git pull origin build
           else
             echo "Main branch does not exist. Fetching existing main branch."
-            git fetch origin main:main
+            git fetch origin build:build
+            git checkout build
           fi
 
       - name: Merge main -> build
@@ -50,4 +51,4 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "Build assets"
-          git push
+          git push origin build
