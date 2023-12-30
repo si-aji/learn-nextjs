@@ -1,5 +1,4 @@
-# .github/workflows/release.yml
-name: Push to remote server
+name: Create PR to release
 
 on:
   push:
@@ -8,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Make commit
+    name: Generate PR to release
     steps:
       - name: Check Tag Format
         run: |
@@ -19,6 +18,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: build
 
       - name: Check if Build Branch Exists
         run: |
