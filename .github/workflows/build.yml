@@ -34,7 +34,7 @@ jobs:
             echo "Main branch already exists."
           else
             echo "Main branch does not exist. Fetching existing main branch."
-            git fetch origin main
+            git fetch origin main:main
           fi
 
       - name: Merge main -> build
