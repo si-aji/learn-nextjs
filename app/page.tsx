@@ -11,6 +11,8 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col gap-2 items-center justify-center p-24">
+      <h1>Page Title</h1>
+
       <div className={ ` flex flex-row gap-4` }>
         <Button onClick={() => {
           setCounter(counter - 1);
