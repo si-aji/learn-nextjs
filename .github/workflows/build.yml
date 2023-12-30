@@ -40,7 +40,9 @@ jobs:
 
       - name: Merge main -> build
         run: |
-          git merge main
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git merge main --allow-unrelated-histories
           
       - name: Build Asset
         run: npm run build # The build command of your project
